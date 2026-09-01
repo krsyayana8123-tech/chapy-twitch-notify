@@ -35,8 +35,8 @@ jobs:
 
       - name: Save notified stream ID
         run: |
-          if git diff --quiet; then
-            echo "変更なし"
+          if [ ! -f last_stream_id.txt ]; then
+            echo "保存する配信IDなし"
             exit 0
           fi
 
@@ -44,5 +44,11 @@ jobs:
           git config user.email "chapy-bot@users.noreply.github.com"
 
           git add last_stream_id.txt
+
+          if git diff --cached --quiet; then
+            echo "配信IDに変更なし"
+            exit 0
+          fi
+
           git commit -m "Update notified stream ID"
           git push
